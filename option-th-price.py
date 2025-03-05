@@ -6,7 +6,6 @@ import streamlit as st
 from PIL import Image
 import seaborn as sns
 import matplotlib.pyplot as plt
-import japanize_matplotlib
 
 
 def black_scholes_european(S, K, sigma, r, T, option_type="call"):
