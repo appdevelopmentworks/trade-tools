@@ -155,9 +155,9 @@ def plot_option_scatter(df, ticker, optyp, atm):
     plt.figure(figsize=(10, 6))
     #グラフのスタイル設定（日本語表示可能にする）
     plt.rcParams['font.family'] = 'MS GOTHIC'
-    #sns.set_theme(font="Meiryo")
+    sns.set_theme(font="MS GOTHIC")
     sns.scatterplot(data=df, x='権利行使価格', y='終値-理論値', hue='出来高', size='出来高', sizes=(10, 500), markers=['s', 'o'])
-    plt.title(label=f"{ticker}の{optyp}オプションプレミアムと理論価格の差")
+    plt.title(label=f"{ticker}の{optyp}オプションプレミアムと理論価格の差", fontname='MS GOTHIC')
     plt.axvline(x=int(atm), color='red', linestyle='--', label=f"ATM({atm})")
     plt.legend()
     return plt
