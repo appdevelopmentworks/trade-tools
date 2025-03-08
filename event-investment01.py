@@ -51,8 +51,8 @@ st.markdown(
         display: block;
         margin-left: auto;
         margin-right: auto;
-        width: 30%;
-        background-color: #4CAF50;  /* 背景色 */
+        width: 50%;
+        background-color: #800000;  /* 背景色 */
         color: white;  /* 文字色 */
         padding: 15px;  /* パディング */
         text-align: center;  /* テキストを中央揃え */
