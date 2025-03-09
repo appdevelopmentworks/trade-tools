@@ -1,5 +1,7 @@
 import yfinance as yf
 import streamlit as st
+import matplotlib.pyplot as plt
+import japanize_matplotlib
 from PIL import Image
 import re
 
@@ -32,6 +34,17 @@ def geteventdata(ticker, kenrlast, byago):
                     '買入日終値': '買入日終値','リターン(%)': 'リターン(%)'}, inplace=True)
     return df
 
+#グラフ表示
+def plot_soneki(dfwin, dflose, coname):
+    plt.figure(figsize=(10, 5))
+    plt.title(label=f"{coname}優待・配当イベント投資リターン")
+    plt.scatter(x=dfwin.index, y=dfwin["リターン(%)"], color="green", label="Win", marker="o")
+    plt.scatter(x=dflose.index, y=dflose["リターン(%)"], color="red", label="Lose", marker="x")
+    plt.axhline(0, color='blue', linestyle=':', label="損益分岐")
+    plt.ylabel("リターン(%)")
+    plt.legend()
+    return plt
+
 st.title("イベント投資期待値算定ツール")
 
 st.text("株主優待・配当の権利確定日を使ったイベント投資に使ってね")
@@ -41,7 +54,7 @@ st.caption("株主優待・配当の権利付最終日と事前買入リター�
 
 ticker = st.text_input("ティッカーコードを入力:", value="9202")
 
-kenrmonth = st.selectbox("権利確定月(月):", [x for x in range(1, 13)], 2) 
+kenrmonth = st.selectbox("権利確定月(月):", [str(x)+"月末" for x in range(1, 13)], 2) 
 buyago = st.slider("買入日(何営業日前)", min_value=1, max_value=60, value=20, step=1)
 kenrlast = st.selectbox("決済日【権利付最終日】(日:2営業日前,米:1営業日前):", [1,2], 1) 
 st.markdown(
@@ -65,30 +78,39 @@ st.markdown(
     """,
     unsafe_allow_html=True
 ) 
-btncol = st.button("計算（いまだ押せ！）")
+btncol = st.button("シュミレート")
 
 if btncol:
-    #
+    coname = yf.Ticker(checkTicker(ticker)).info["shortName"]
+    #データセット取得
     data = geteventdata(checkTicker(ticker), int(kenrlast), int(buyago))
     #
-    dswin = data[data["権利付最終日"] & (data["リターン(%)"] > 0) & (data["月"]==int(kenrmonth))]
-    dslose = data[data["権利付最終日"] & (data["リターン(%)"] <= 0) & (data["月"]==int(kenrmonth))]
+    dswin = data[data["権利付最終日"] & (data["リターン(%)"] > 0) & (data["月"]==int(kenrmonth[:-2]))]
+    dslose = data[data["権利付最終日"] & (data["リターン(%)"] <= 0) & (data["月"]==int(kenrmonth[:-2]))]
     #勝率
     wincnt = len(dswin)
     losecnt = len(dslose)
     winev = round(dswin["リターン(%)"].mean(),2)
+    winmax = round(dswin["リターン(%)"].max(),2)
     loseev = round(dslose["リターン(%)"].mean(),2)
+    losemin = round(dslose["リターン(%)"].min(),2)
     winrate = round((wincnt / (wincnt + losecnt)), 2)
     expvalue = (winev * winrate) + (loseev * (1 - winrate))
     #結果表示
     st.subheader("結果:")
-    st.write("勝率: " + str(winrate * 100) + "%")
-    st.write("勝数: " + str(wincnt))
-    st.write("勝平均リターン: " + str(winev))
-    st.write("負数: " + str(losecnt))
-    st.write("負平均損失: " + str(loseev))
-    st.write("期待値: " + str(round(expvalue, 2)))
-    
+    st.pyplot(plot_soneki(dswin, dslose, coname))
+    #
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("勝率: " + str(winrate * 100) + "%")
+        st.write("勝数: " + str(wincnt))
+        st.write("勝平均リターン: " + str(winev))
+        st.write("最大リターン: " + str(winmax))
+    with col2:
+        st.write("期待値: " + str(round(expvalue, 2)))
+        st.write("負数: " + str(losecnt))
+        st.write("負平均損失: " + str(loseev))
+        st.write("最大損失: " + str(losemin))    
     
     #st.text("勝ちトレード:")
     st.subheader("勝ちトレード:")
