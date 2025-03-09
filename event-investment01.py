@@ -39,11 +39,11 @@ def plot_soneki(dfwin, dflose, coname):
     plt.rcParams['font.family'] = 'sans-serif'
     plt.rcParams['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'Osaka']
     plt.figure(figsize=(10, 5))
-    plt.title(label=f"{coname}優待・配当イベント投資リターン")
+    plt.title(label=f"{coname} Event investment return")
     plt.scatter(x=dfwin.index, y=dfwin["リターン(%)"], color="green", label="Win", marker="o")
     plt.scatter(x=dflose.index, y=dflose["リターン(%)"], color="red", label="Lose", marker="x")
-    plt.axhline(0, color='blue', linestyle=':', label="損益分岐")
-    plt.ylabel("リターン(%)")
+    plt.axhline(0, color='blue', linestyle=':', label="Breakeven")
+    plt.ylabel("Return(%)")
     plt.legend()
     return plt
 
