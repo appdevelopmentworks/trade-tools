@@ -1,7 +1,7 @@
 import yfinance as yf
 import streamlit as st
 import matplotlib.pyplot as plt
-import japanize_matplotlib
+import matplotlib.font_manager as fm
 from PIL import Image
 import re
 
@@ -36,6 +36,8 @@ def geteventdata(ticker, kenrlast, byago):
 
 #グラフ表示
 def plot_soneki(dfwin, dflose, coname):
+    plt.rcParams['font.family'] = 'sans-serif'
+    plt.rcParams['font.sans-serif'] = ['Hiragino Maru Gothic Pro', 'Yu Gothic', 'Meirio', 'Takao', 'IPAexGothic', 'IPAPGothic', 'Osaka']
     plt.figure(figsize=(10, 5))
     plt.title(label=f"{coname}優待・配当イベント投資リターン")
     plt.scatter(x=dfwin.index, y=dfwin["リターン(%)"], color="green", label="Win", marker="o")
