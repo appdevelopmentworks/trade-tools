@@ -73,7 +73,9 @@ with col2:
 
 ######################################
 urlkaiz = f"https://finance.yahoo.co.jp/stocks/ranking/creditBuybackIncrease?market={marketgrp}&term=weekly&page="
-urluriz = f"https://finance.yahoo.co.jp/stocks/ranking/creditShortfallDecrease?market={marketgrp}&term=weekly&page="
+urlurig = f"https://finance.yahoo.co.jp/stocks/ranking/creditShortfallDecrease?market={marketgrp}&term=weekly&page="
+urlkaig = f"https://finance.yahoo.co.jp/stocks/ranking/creditBuybackDecrease?market={marketgrp}&term=weekly&page="
+urluriz = f"https://finance.yahoo.co.jp/stocks/ranking/creditShortfallIncrease?market={marketgrp}&term=weekly&page="
 ######################################
 
 st.markdown(
@@ -84,7 +86,7 @@ st.markdown(
         margin-left: auto;
         margin-right: auto;
         width: 50%;
-        background-color: #800000;  /* 背景色 */
+        background-color: #da70d6;  /* 背景色 */
         color: white;  /* 文字色 */
         padding: 15px;  /* パディング */
         text-align: center;  /* テキストを中央揃え */
@@ -96,15 +98,32 @@ st.markdown(
     </style>
     """,
     unsafe_allow_html=True
-)
-btnGet = st.button("データ取得")
+) 
 
-if btnGet:
-    dfkai = get_urldata_yf(urlkaiz, pages)
-    dfuri = get_urldata_yf(urluriz, pages)
-    dfcommon = pd.merge(dfkai, dfuri[["コード", "順位"]], on=['コード', 'コード'], how='inner')
-    dfcommon["順位和"] = dfcommon["順位_x"] + dfcommon["順位_y"]
-    dfcommon = dfcommon[['コード', '名称', '市場', '終値', '買残', '増減', '売残', '信用倍率','順位_x', '順位_y','順位和']]
-    dfcommon = dfcommon.rename(columns={'順位_x': '信用買残順位', '順位_y': '信用売減順位'})
-    dfcommon.sort_values(by='順位和', ascending=True, inplace=True)
-    st.dataframe(dfcommon)
+col1, col2 = st.columns(2)
+with col1:
+    btnbuy = st.button("買候補取得")
+with col2:
+    btnsell = st.button("売候補取得")
+
+if btnbuy:
+    dfkaizou = get_urldata_yf(urlkaiz, pages)
+    dfurigen = get_urldata_yf(urlurig, pages)
+    dfcommonkai = pd.merge(dfurigen, dfkaizou[["コード", "順位"]], on=['コード', 'コード'], how='inner')
+    dfcommonkai["順位和"] = dfcommonkai["順位_x"] + dfcommonkai["順位_y"]
+    dfcommonkai = dfcommonkai[['コード', '名称', '市場', '終値', '買残', '増減', '売残', '信用倍率','順位_x', '順位_y','順位和']]
+    dfcommonkai = dfcommonkai.rename(columns={'順位_x': '信用売減順位', '順位_y': '信用買残順位'})
+    dfcommonkai.sort_values(by='順位和', ascending=True, inplace=True)
+    st.subheader("買い候補")
+    st.dataframe(dfcommonkai)
+    
+if btnsell:
+    dfkaigen = get_urldata_yf(urlkaig, pages)
+    dfurizou = get_urldata_yf(urluriz, pages) 
+    dfcommonuri = pd.merge(dfkaigen, dfurizou[["コード", "順位"]], on=['コード', 'コード'], how='inner')
+    dfcommonuri["順位和"] = dfcommonuri["順位_x"] + dfcommonuri["順位_y"]
+    dfcommonuri = dfcommonuri[['コード', '名称', '市場', '終値', '買残', '増減', '売残', '信用倍率','順位_x', '順位_y','順位和']]
+    dfcommonuri = dfcommonuri.rename(columns={'順位_x': '買残減順位', '順位_y': '売残増順位'})
+    dfcommonuri.sort_values(by='順位和', ascending=True, inplace=True)
+    st.subheader("売り候補")
+    st.dataframe(dfcommonuri)    
