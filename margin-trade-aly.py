@@ -56,6 +56,8 @@ def get_urldata_yf(url, pages=1):
     #データフレームに入れる       
     df = pd.DataFrame(data)
     return df
+
+
 st.title("信用残分析")
 
 st.text("信用残を使った買い分析を行います。")
@@ -64,15 +66,45 @@ st.image(image)
 st.caption("データは毎週１回、金曜日のみ更新です")
 
 col1, col2 = st.columns(2)
-
-marketgrp = st.selectbox("市場を選択:", ["東証ALL | tokyoAll", "東証PRM | tokyo1", "東証STD | tokyo2", "東証GRT | tokyoM"], 1)[8:]
-pages = st.selectbox("取得ページ数:", [x for x in range(1, 5)], 2)
+with col1:
+    marketgrp = st.selectbox("市場を選択:", ["東証ALL | tokyoAll", "東証PRM | tokyo1", "東証STD | tokyo2", "東証GRT | tokyoM"], 1)[8:]
+with col2:
+    pages = st.selectbox("取得ページ数:", [x for x in range(1, 5)], 2)
 
 ######################################
 urlkaiz = f"https://finance.yahoo.co.jp/stocks/ranking/creditBuybackIncrease?market={marketgrp}&term=weekly&page="
 urluriz = f"https://finance.yahoo.co.jp/stocks/ranking/creditShortfallDecrease?market={marketgrp}&term=weekly&page="
 ######################################
 
-st.write(marketgrp)
-st.write(urlkaiz)
-st.write(urluriz)
+st.markdown(
+    """
+    <style>
+    .stButton > button {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+        background-color: #800000;  /* 背景色 */
+        color: white;  /* 文字色 */
+        padding: 15px;  /* パディング */
+        text-align: center;  /* テキストを中央揃え */
+        text-decoration: none;  /* テキストの下線をなし */
+        font-size: 16px;  /* フォントサイズ */
+        border-radius: 4px;  /* 角を丸くする */
+        cursor: pointer;  /* カーソルをポインタに */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+btnGet = st.button("データ取得")
+
+if btnGet:
+    dfkai = get_urldata_yf(urlkaiz, pages)
+    dfuri = get_urldata_yf(urluriz, pages)
+    dfcommon = pd.merge(dfkai, dfuri[["コード", "順位"]], on=['コード', 'コード'], how='inner')
+    dfcommon["順位和"] = dfcommon["順位_x"] + dfcommon["順位_y"]
+    dfcommon = dfcommon[['コード', '名称', '市場', '終値', '買残', '増減', '売残', '信用倍率','順位_x', '順位_y','順位和']]
+    dfcommon = dfcommon.rename(columns={'順位_x': '信用買残順位', '順位_y': '信用売減順位'})
+    dfcommon.sort_values(by='順位和', ascending=True, inplace=True)
+    st.dataframe(dfcommon)
