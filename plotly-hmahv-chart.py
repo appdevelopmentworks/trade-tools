@@ -33,7 +33,7 @@ def hma(series, window):
 
 def plot_chart(df, coname):
     layout = {
-        "height":1500,
+        "height":1200,
         "title":{"text": "{}".format(coname), "x": 0.5},
         "xaxis":{"title": "日付", "rangeslider":{"visible":False}},
         "yaxis1":{"domain":[.46, 1.0], "title": "価格（円）", "side": "left", "tickformat": ","},
