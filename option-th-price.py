@@ -157,8 +157,8 @@ def getHV(code):
 def plot_option_scatter(df, ticker, optyp, atm):
     plt.figure(figsize=(10, 6))
     #グラフのスタイル設定（日本語表示可能にする）
-    plt.rcParams['font.family'] = ['Noto Sans CJK JP']
-    sns.set_theme(font="Noto Sans CJK JP")
+    plt.rcParams['font.family'] = ['Noto Sans CJK JP', 'Yu Gothic', 'Meiryo']
+    sns.set_theme(font="Yu Gothic")
     sns.scatterplot(data=df, x='権利行使価格', y='終値-理論値', hue='出来高', size='出来高', sizes=(10, 500), markers=['s', 'o'])
     plt.title(label=f"{ticker} {optyp} option ", fontname='MS GOTHIC')
     plt.axvline(x=int(atm), color='red', linestyle='--', label=f"ATM({atm})")
