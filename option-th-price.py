@@ -7,7 +7,9 @@ from PIL import Image
 import seaborn as sns
 import japanize_matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.font_manager
 
+print(matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf'))
 
 def black_scholes_european(S, K, sigma, r, T, option_type="call"):
     """
