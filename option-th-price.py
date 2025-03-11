@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import streamlit as st
 from PIL import Image
 import seaborn as sns
-#import japanize_matplotlib
+import japanize_matplotlib
 import matplotlib.pyplot as plt
 
 
