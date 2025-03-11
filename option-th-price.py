@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import streamlit as st
 from PIL import Image
 import seaborn as sns
-import japanize_matplotlib
+#import japanize_matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -158,7 +158,7 @@ def plot_option_scatter(df, ticker, optyp, atm):
     plt.rcParams['font.family'] = 'MS GOTHIC'
     sns.set_theme(font="MS GOTHIC")
     sns.scatterplot(data=df, x='権利行使価格', y='終値-理論値', hue='出来高', size='出来高', sizes=(10, 500), markers=['s', 'o'])
-    plt.title(label=f"{ticker} {optyp}option ", fontname='MS GOTHIC')
+    plt.title(label=f"{ticker} {optyp} option ", fontname='MS GOTHIC')
     plt.axvline(x=int(atm), color='red', linestyle='--', label=f"ATM({atm})")
     plt.legend()
     return plt
