@@ -4,13 +4,8 @@ import pandas as pd
 from PIL import Image
 
 
-def getsectorrank():
-    #セクター別騰落ＵＲＬ
-    urlsecter = "https://kabutan.jp/warning/?mode=9_1&market=0&capitalization=-1&stc=zenhiritsu&stm=1&col=zenhiritsu&page="
-
+def getsectorrank(urlsecter):
     for page in range(1, 4):
-        # df = pd.read_html(urlsecter)
-        # df = df[2]
         load_url = urlsecter + str(page)
         dfw = pd.read_html(load_url)
         dfw = dfw[2]
@@ -43,7 +38,8 @@ st.image(image)
 st.caption("データは毎朝9:15以降に更新されます!")
 st.subheader("セクター別ランキング：")
 
-dfrank = getsectorrank()
+urlsecter = "https://kabutan.jp/warning/?mode=9_1&market=0&capitalization=-1&stc=zenhiritsu&stm=1&col=zenhiritsu&page="
+dfrank = getsectorrank(urlsecter)
 st.dataframe(dfrank)
 
 options = []
