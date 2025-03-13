@@ -53,6 +53,9 @@ def addinfdata(df):
     dfnew["出来高上昇率3M"] = dfnew["現在出来高"] / dfnew["平均出来高3M"] -1
     dfnew["出来高上昇率10D"]= dfnew["現在出来高"] / dfnew["平均出来高10D"] -1
     dfnew.insert(1, '銘柄名', df["銘柄名"])
+    dfnew.insert(14, '利回り', df["利回り"])
+    dfnew.insert(14, 'PBR', df["ＰＢＲ"])
+    dfnew.insert(14, 'PER', df["ＰＥＲ"])    
     return dfnew
         
 
@@ -69,52 +72,59 @@ urlsecter = "https://kabutan.jp/warning/?mode=9_1&market=0&capitalization=-1&stc
 dfrank = getsectorrank(urlsecter)
 st.dataframe(dfrank)
 
-#セレクトボックス
-options = []
-for code, name in zip(dfrank["コード"], dfrank["銘柄名"]):
-    data = str(code) + "|" + name
-    options.append(data)
-sector = st.selectbox("セクターを選択", options, 0)[:3]
-#選択されているセクターコードを変数に代入
-seccnt = dfrank[dfrank["コード"]==int(sector)].iloc[0,2]
-                    
-st.subheader("セクターランキング：")
-#1ページに何行表示にされているか
-pagelstvew = 15
-#Webページ用のコードに変換
-seccode = int(sector) - 250
-#行数から取得ページ数を算定
-pages =  (seccnt + pagelstvew-1) // pagelstvew
+col1, col2 = st.columns(2)
 
-#セクター内でデータ取得
-urls = f"https://kabutan.jp/themes/?industry={seccode}&market=1&capitalization=-1&stc=&stm=1&col=zenhiritsu&page="
-dfsctr = getsectordata(urls, pages)
-st.dataframe(dfsctr)
+with col1:
+    #セレクトボックス
+    options = []
+    for code, name in zip(dfrank["コード"], dfrank["銘柄名"]):
+        data = str(code) + "|" + name
+        options.append(data)
+    sector = st.selectbox("セクターを選択", options, 0)[:3]
+    #選択されているセクターコードを変数に代入
+    seccnt = dfrank[dfrank["コード"]==int(sector)].iloc[0,2]
+                        
+    #1ページに何行表示にされているか
+    pagelstvew = 15
+    #Webページ用のコードに変換
+    seccode = int(sector) - 250
+    #行数から取得ページ数を算定
+    pages =  (seccnt + pagelstvew-1) // pagelstvew
 
-st.markdown(
-    """
-    <style>
-    .stButton > button {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 30%;
-        background-color: #006400;  /* 背景色 */
-        color: white;  /* 文字色 */
-        padding: 15px;  /* パディング */
-        text-align: center;  /* テキストを中央揃え */
-        text-decoration: none;  /* テキストの下線をなし */
-        font-size: 16px;  /* フォントサイズ */
-        border-radius: 4px;  /* 角を丸くする */
-        cursor: pointer;  /* カーソルをポインタに */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-) 
-btaddinf = st.button("付加情報")
+    #セクター内でデータ取得
+    #st.subheader("セクターランキング：")
+    urls = f"https://kabutan.jp/themes/?industry={seccode}&market=1&capitalization=-1&stc=&stm=1&col=zenhiritsu&page="
+    dfsctr = getsectordata(urls, pages)
+    #st.dataframe(dfsctr)
+with col2:
+    st.markdown(
+        """
+        <style>
+        .stButton > button {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+            background-color: #006400;  /* 背景色 */
+            color: white;  /* 文字色 */
+            padding: 15px;  /* パディング */
+            text-align: center;  /* テキストを中央揃え */
+            text-decoration: none;  /* テキストの下線をなし */
+            font-size: 16px;  /* フォントサイズ */
+            border-radius: 4px;  /* 角を丸くする */
+            cursor: pointer;  /* カーソルをポインタに */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    ) 
+    btaddinf = st.button("セクター内情報")
+    
 if btaddinf:
+    data_lode_state = st.text("読み込み中・・・")
     dfaddinf = addinfdata(dfsctr)
+    data_lode_state.text("読み込み完了!")
+    st.subheader("セクターランキング:")
     st.dataframe(dfaddinf)
 
 
