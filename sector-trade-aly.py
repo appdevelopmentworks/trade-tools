@@ -124,7 +124,7 @@ if btaddinf:
     data_lode_state = st.text("読み込み中・・・")
     dfaddinf = addinfdata(dfsctr)
     data_lode_state.text("読み込み完了!")
-    st.subheader("セクターランキング:")
+    st.subheader("セクター内ランキング:")
     st.dataframe(dfaddinf)
 
 
