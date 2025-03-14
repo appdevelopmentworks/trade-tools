@@ -128,7 +128,7 @@ with col3:
     macdsigp = int(st.text_input("MACD Signal", value=9))
 hvp = int(st.text_input("HV(ヒストリカルボラティリティー)期間", value=20))
 #表示期間
-dispp = int(st.slider("表示期間(日):", min_value=30, max_value=1000, value=100, step=1))
+dispp = int(st.slider("表示期間(日):", min_value=30, max_value=1000, value=30, step=1))
 #書式付きボタン
 st.markdown(
     """
