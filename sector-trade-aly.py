@@ -36,7 +36,9 @@ def addinfdata(df):
     tickers = yf.Tickers([str(x) + ".T" for x in df["コード"]])
     data = {'コード':[], '前日終値':[], '始値':[], '現在値':[], '現在安値':[], '現在高値':[], '現在出来高':[], '平均出来高3M':[], '平均出来高10D':[]}
 
-    for ticker in tickers.tickers:    
+    for ticker in tickers.tickers:
+        if tickers.tickers[ticker].info["typeDisp"]=="Fund":
+            continue 
         data["コード"].append(ticker[:4])
         data["前日終値"].append(tickers.tickers[ticker].info["previousClose"])
         data["始値"].append(tickers.tickers[ticker].info["open"])
