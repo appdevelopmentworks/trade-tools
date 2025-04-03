@@ -64,7 +64,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     #
-    startday = pd.to_datetime("2015-01-01")
+    startday = pd.to_datetime("2020-01-01")
     startlearn = st.date_input("学習開始日", value=startday)
 with col2:
     today = datetime.date.today()
@@ -106,7 +106,7 @@ if btnstart:
     #パラメータ（要チューニング）
     params = {'objective': 'regression', 'metric': 'mae', 'boosting_type': 'gbdt'}
     #学習
-    model = lgb.train(params, train_data, num_boost_round=1000)
+    model = lgb.train(params, train_data, num_boost_round=100)
     #当日のデータで明日の変動幅を予測
     #X_test = data[-1:][['Close', 'High', 'Low', 'Open', 'Bodysize', 'PrevClose', 'Uhige','Lhige', 'DefClose', 'ScRVAS', 'Uhigeratio', 'Lhigeratio', 'Volatility']]
     X_test = data[-1:][['Close', 'High', 'Low', 'Open', 'Bodysize', 'PrevClose', 'Uhige','Lhige', 'DefClose', 'ScRVAS', 'Uhigeratio', 'Lhigeratio', 'Volatility', 'WeekDay']]
