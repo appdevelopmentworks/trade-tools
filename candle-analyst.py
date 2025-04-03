@@ -63,7 +63,8 @@ col1, col2 = st.columns(2)
 with col1:
     #ティッカー（初期値は、日経225、金/ドル(GC=F)）
     ticker = st.text_input("コードを入力:", value="^N225")
-    startday = pd.to_datetime("2020-01-01")
+    #startday = pd.to_datetime("2020-01-01")
+    startday = datetime.date.today() - datetime.timedelta(7)
     startlearn = st.date_input("学習開始日", value=startday)
 with col2:
     today = datetime.date.today()
