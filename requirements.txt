@@ -13,3 +13,4 @@ requests==2.32.3
 bs4==0.0.2
 lxml==5.2.1
 html5lib==1.1
+lightgbm==4.6.0
