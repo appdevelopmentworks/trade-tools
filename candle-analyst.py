@@ -58,16 +58,16 @@ image = Image.open("headermoneymoney.png")
 st.image(image)
 st.caption("予測データは上がりそうか下がれそうかの目安として使ってください")
 
-#ティッカー（初期値は、日経225、金/ドル(GC=F)）
-ticker = st.text_input("コードを入力:", value="^N225")
 col1, col2 = st.columns(2)
 
 with col1:
-    #
+    #ティッカー（初期値は、日経225、金/ドル(GC=F)）
+    ticker = st.text_input("コードを入力:", value="^N225")
     startday = pd.to_datetime("2020-01-01")
     startlearn = st.date_input("学習開始日", value=startday)
 with col2:
     today = datetime.date.today()
+    predday = st.date_input("予測したい日", value=today + datetime.timedelta(1))
     endlearn = st.date_input("学習終了日", value=today)
      
 
@@ -109,10 +109,13 @@ if btnstart:
     model = lgb.train(params, train_data, num_boost_round=100)
     #当日のデータで明日の変動幅を予測
     #X_test = data[-1:][['Close', 'High', 'Low', 'Open', 'Bodysize', 'PrevClose', 'Uhige','Lhige', 'DefClose', 'ScRVAS', 'Uhigeratio', 'Lhigeratio', 'Volatility']]
-    X_test = data[-1:][['Close', 'High', 'Low', 'Open', 'Bodysize', 'PrevClose', 'Uhige','Lhige', 'DefClose', 'ScRVAS', 'Uhigeratio', 'Lhigeratio', 'Volatility', 'WeekDay']]
+    #X_test = data[-1:][['Close', 'High', 'Low', 'Open', 'Bodysize', 'PrevClose', 'Uhige','Lhige', 'DefClose', 'ScRVAS', 'Uhigeratio', 'Lhigeratio', 'Volatility', 'WeekDay']]
+    currday = predday - datetime.timedelta(1)
+    X_test = data.loc[currday:currday][['Close', 'High', 'Low', 'Open', 'Bodysize', 'PrevClose', 'Uhige','Lhige', 'DefClose', 'ScRVAS', 'Uhigeratio', 'Lhigeratio', 'Volatility', 'WeekDay']]
+    
     predictions = model.predict(X_test)
     col3, col4 = st.columns(2)
     with col3:
-        st.subheader("明日の [終値 - 始値]")
+        st.subheader(f"{predday}の [終値 - 始値]")
     with col4:
         st.subheader(predictions)
