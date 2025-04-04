@@ -143,7 +143,7 @@ def get_data_mpf_plot(ticker):
 ######################################################################
 st.title("乖離率トレード")
 
-st.text("小手川隆さんの手法をプログラムにしました。")
+st.caption("小手川隆さんの手法をプログラムにしました。")
 image = Image.open("headermoneymoney.png")
 st.image(image)
 st.caption("下げ相場でも買い候補を探すため、ヒットしない場合があります。")
