@@ -6,15 +6,14 @@ import datetime
 import re
 import ta
 
-
-#
+#エクセルbookから該当リストをデータフレームで取得
 def get_meigaralst(name):
     diclst = {"日経225":"N225", "日経500":"N500", "JPX400":"JPX400", "読売333":"Y333"}
     #
     dfnikkei = pd.read_excel("./NikkeiCo.xlsx", sheet_name=diclst[name])
     return dfnikkei
 
-#
+#ボリンジャーのσとRSIを計算し売られすぎ（σが小さい順）リストをデータフレームで返す
 @st.cache_data
 def cal_bbandrsi_data(dflist, bbspan=20, rsispan=14, start = datetime.datetime.now() - datetime.timedelta(40)):
     totalcnt = len(dflist)
@@ -58,7 +57,7 @@ def cal_bbandrsi_data(dflist, bbspan=20, rsispan=14, start = datetime.datetime.n
 
 
 
-
+####################################################################################
 st.title("ボリンジャー＆RSIで探す！")
 
 st.caption("ボリンジャーバンドとRSIを使って売り込まれた銘柄を探します")
