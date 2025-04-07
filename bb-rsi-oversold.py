@@ -6,11 +6,22 @@ import datetime
 import re
 import ta
 
+
+def checkTicker(ticker):
+    # 有効な英大文字を定義
+    valid_letters = "ACDFGHJKLMPNRSTUWX-Y"
+    # 正規表現パターン
+    pattern = rf"^[0-9][0-9{valid_letters}][0-9][0-9{valid_letters}]$"
+    if not re.match(pattern, ticker):
+        return ticker
+    else:
+        return ticker + ".T"
+    
 #エクセルbookから該当リストをデータフレームで取得
 def get_meigaralst(name):
-    diclst = {"日経225":"N225", "日経500":"N500", "JPX400":"JPX400", "読売333":"Y333"}
+    diclst = {"日経225":"N225", "日経500":"N500", "JPX400":"JPX400", "読売333":"Y333", "S&P500":"SP500"}
     #
-    dfnikkei = pd.read_excel("./NikkeiCo.xlsx", sheet_name=diclst[name])
+    dfnikkei = pd.read_excel("./Stocklist.xlsx", sheet_name=diclst[name])
     return dfnikkei
 
 #ボリンジャーのσとRSIを計算し売られすぎ（σが小さい順）リストをデータフレームで返す
@@ -24,7 +35,7 @@ def cal_bbandrsi_data(dflist, bbspan=20, rsispan=14, start = datetime.datetime.n
     for row in dflist.values:
         #株価データダウンロード60日分
         #print(row[0])
-        df = yf.download(str(row[0]) + ".T", start=start, progress=False)
+        df = yf.download(checkTicker(str(row[0])), start=start, progress=False)
         df.columns = [col[0] for col in df.columns]
         #プログレスバーの処理
         cnt += 1
@@ -45,7 +56,7 @@ def cal_bbandrsi_data(dflist, bbspan=20, rsispan=14, start = datetime.datetime.n
         #RSI
         df['RSI'] = ta.momentum.RSIIndicator(df['Close'], window=rsispan).rsi()
         #書き出し
-        data["コード"].append(row[0])
+        data["コード"].append(str(row[0]))
         data["銘柄名"].append(row[1])
         data["業種"].append(row[3])
         data["標準偏差"].append(df["std"].iloc[-1])
@@ -70,7 +81,7 @@ with col1:
     bbspan = int(st.text_input("ボリンジャーバンド期間", value=20))
 with col2:
     rsispan = int(st.text_input("RSI期間", value=14))
-    nikkeilst = st.selectbox("日経リスト種類:", ["日経225", "日経500", "JPX400"], 0)
+    nikkeilst = st.selectbox("銘柄リスト種類:", ["日経225", "日経500", "JPX400", "S&P500"], 0)
 
 #書式付きボタン
 st.markdown(

@@ -70,11 +70,19 @@ def search_url(marketgrp):
 def candidate_to_buy(dfkairi):
     start = datetime.datetime.now() - datetime.timedelta(250)
     data = {'コード':[], '銘柄名':[], '市場':[], '取引値':[], '乖離率(%)':[], 'MACDヒストグラム':[], 'RSI':[]}
-
+    #
+    totalcnt = len(dfkairi)
+    cnt = 0
+    
     for row in dfkairi.values:
         try:
             df = yf.download(row[1] + ".T", start=start, progress=False)
             df.columns = [col[0] for col in df.columns]
+            #プログレスバーの処理
+            cnt += 1
+            prgval = int(cnt / totalcnt * 100)
+            prgbar.progress(prgval, text=f"処理中... {prgval}%")
+            #データ無いときは続ける   
             if len(df)==0:
                 continue         
             #MACD
@@ -94,6 +102,7 @@ def candidate_to_buy(dfkairi):
                 print(row[1])
         except:
             print(row[1], "でエラー発生")
+    prgbar.progress(100, text="完了！")
     return pd.DataFrame(data)
 
 def get_data_mpf_plot(ticker):
@@ -180,6 +189,8 @@ st.markdown(
     unsafe_allow_html=True
 )    
 btnkairi =st.button("データ取得")
+#
+prgbar = st.progress(0, "")
 
 if btnkairi:
     data_lode_state = st.text("読み込み中・・・")
