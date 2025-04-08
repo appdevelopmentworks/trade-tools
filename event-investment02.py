@@ -75,7 +75,7 @@ def det_suggestion(dfexp):
     if optrei["期待値"] <= 0:
         suggest = "やめておきなさい！儲かる確率は低いです。"
     else:
-        suggest = "権利付最終日の{}日前に買うと、\n勝率{}(%)、期待リターン{}(%)です".format(round(optrei["何日前"]),optrei["勝率"]*100,round(optrei["期待値"], 2))
+        suggest = "権利付最終日の{}日前に買うと、\n勝率{}(%)、期待リターン{}(%)です".format(round(optrei["何日前"]),round(optrei["勝率"]*100, 2),round(optrei["期待値"], 2))
     return suggest
 
 def plot_exp_chart(dfexp, coname, winavg, loseavg, winmax, losemin):    
