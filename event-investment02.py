@@ -68,6 +68,16 @@ def get_expected_list(code, kenrlast, kenrmonth, buyago):
         
     return pd.DataFrame(data)
 
+#結果データセットから良い条件を返す
+def det_suggestion(dfexp):
+    dfopt = dfexp.sort_values(by=["勝率","期待値"],ascending=[False,False])
+    optrei = dfopt.iloc[0,:]
+    if optrei["期待値"] <= 0:
+        suggest = "やめておきなさい！儲かる確率は低いです。"
+    else:
+        suggest = "権利付最終日の{}日前に買うと、\n勝率{}(%)、期待リターン{}(%)です".format(round(optrei["何日前"]),optrei["勝率"]*100,round(optrei["期待値"], 2))
+    return suggest
+
 def plot_exp_chart(dfexp, coname, winavg, loseavg, winmax, losemin):    
     # グリッドスペックを作成
     gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1]) 
@@ -152,11 +162,13 @@ st.markdown(
 btncal = st.button("シュミレート")
 
 if btncal:
-    #
+    #社名を取得
     coname = yf.Ticker(checkTicker(ticker)).info["shortName"]
-    #
+    #期待値データセットを取得
     dfex = get_expected_list(checkTicker(ticker), int(kenrlast), int(kenrmonth), int(buyago))
+    #グラフで可視化
     fig = plot_exp_chart(dfex,coname,chkwinavg,chkloseavg,chkwinemax,chklosemin)
+    st.subheader(det_suggestion(dfex))
     st.pyplot(fig)
     if chkdisphyou:
         st.dataframe(dfex, width=1000)
