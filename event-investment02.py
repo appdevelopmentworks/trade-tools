@@ -139,7 +139,7 @@ with col3:
     #chkwinrate = st.checkbox("勝率表示",value=True)
     chkdisphyou = st.checkbox("確率表表示",value=True)
     
-buyago = st.slider("買入日(何営業日前)", min_value=1, max_value=120, value=60, step=1)
+buyago = st.slider("検査期間(何営業日前～):", min_value=1, max_value=120, value=60, step=1)
 
 st.markdown(
     """
