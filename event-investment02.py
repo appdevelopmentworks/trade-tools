@@ -6,6 +6,7 @@ import matplotlib.font_manager as fm
 import matplotlib.gridspec as gridspec
 from PIL import Image
 import re
+import datetime
 
 
 def checkTicker(ticker):
@@ -114,6 +115,8 @@ def plot_exp_chart(dfexp, coname, winavg, loseavg, winmax, losemin):
 
 ######################################################################
 
+thismonth = datetime.datetime.now().month
+
 st.title("イベント投資最適日算定ツール")
 
 st.text("株主優待・配当狙い投資の最適な投資日を発掘")
@@ -128,11 +131,11 @@ with col1:
     chkwinavg = st.checkbox("勝平均表示",value=True)
     chkwinemax = st.checkbox("最大リターン表示")
 with col2:
-    kenrlast = st.selectbox("決済日【権利付最終日】", [1,2], 1) 
+    kenrmonth = st.selectbox("権利確定月(月):", [str(x)+"月末" for x in range(1, 13)], thismonth-1)[:-2]
     chkloseavg = st.checkbox("負平均表示",value=True)
     chklosemin = st.checkbox("最大損失表示")
 with col3:
-    kenrmonth = st.selectbox("権利確定月(月):", [str(x)+"月末" for x in range(1, 13)], 2)[:-2]
+    kenrlast = st.selectbox("決済日【権利付最終日】", [1,2], 1) 
     #chkwinrate = st.checkbox("勝率表示",value=True)
     chkdisphyou = st.checkbox("確率表表示",value=True)
     
