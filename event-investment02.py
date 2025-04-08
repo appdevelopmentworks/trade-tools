@@ -49,7 +49,6 @@ def get_expected_list(code, kenrlast, kenrmonth, buyago):
         
         wincnt = dfwin.shape[0]
         losecnt = dflose.shape[0]
-        print(wincnt,losecnt)
         winev = round(dfwin["リターン(%)"].mean(),2)
         winmax = round(dfwin["リターン(%)"].max(),2)
         loseev = round(dflose["リターン(%)"].mean(),2)
@@ -124,7 +123,7 @@ with col2:
     chklosemin = st.checkbox("最大損失表示")
 with col3:
     kenrmonth = st.selectbox("権利確定月(月):", [str(x)+"月末" for x in range(1, 13)], 2)[:-2]
-    chkwinrate = st.checkbox("勝率表示",value=True)
+    #chkwinrate = st.checkbox("勝率表示",value=True)
     chkdisphyou = st.checkbox("確率表表示",value=True)
     
 buyago = st.slider("買入日(何営業日前)", min_value=1, max_value=120, value=60, step=1)
