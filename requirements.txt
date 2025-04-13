@@ -17,3 +17,4 @@ lightgbm==4.6.0
 mplfinance==0.12.10b0
 openpyxl==3.1.5
 streamlit-aggrid==1.1.2
+catboost==1.2.7
