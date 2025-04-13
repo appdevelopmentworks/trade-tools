@@ -25,7 +25,7 @@ def data_pre(df, col):
 
 @st.cache_data
 def stock_data_1mo(code="^N225"):
-    df = yf.download(code, start=datetime.datetime.now() - datetime.timedelta(30))
+    df = yf.download(code, start=datetime.datetime.now() - datetime.timedelta(30),progress=False)
     df.columns = [col[0] for col in df.columns]
     #正解列作成
     df["Tgt1"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
@@ -48,10 +48,10 @@ imageDown = Image.open("./images/down.jpg")
 ###################################################
 st.title("CatBoostで株価UpDown予測")
 
-st.text("CatBoostで日経225株価が終値ベースで上がるかどうかを予測")
+st.text("CatBoostで日経225株価が終値ベースで明日上がるか下がるかを予測")
 image = Image.open("./images/catboost.png")
 st.image(image)
-st.caption("モデルの更新は3か月ごと実施する予定")
+st.caption("モデルの更新は3か月ごと実施する予定です！")
 
 #書式付きボタン
 st.markdown(
@@ -62,7 +62,7 @@ st.markdown(
         margin-left: auto;
         margin-right: auto;
         width: 50%;
-        background-color: #c71585;  /* 背景色 */
+        background-color: #0000ff;  /* 背景色 */
         color: white;  /* 文字色 */
         padding: 15px;  /* パディング */
         text-align: center;  /* テキストを中央揃え */
