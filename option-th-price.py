@@ -157,10 +157,13 @@ def getHV(code):
 def plot_option_scatter(df, ticker, optyp, atm):
     plt.figure(figsize=(10, 6))
     #グラフのスタイル設定（日本語表示可能にする）
-    plt.rcParams['font.family'] = ['Noto Sans CJK JP', 'Yu Gothic', 'Meiryo']
-    sns.set_theme(font="Yu Gothic")
+    #plt.rcParams['font.family'] = ['Noto Sans CJK JP', 'Yu Gothic', 'Meiryo']
+    #sns.set(font='IPAexGothic')
+    sns.set_theme(font="IPAexGothic")
     sns.scatterplot(data=df, x='権利行使価格', y='終値-理論値', hue='出来高', size='出来高', sizes=(10, 500), markers=['s', 'o'])
-    plt.title(label=f"{ticker} {optyp} option ", fontname='MS GOTHIC')
+    plt.title(label=f"{ticker} {optyp} option ", fontname='IPAexGothic')
+    plt.ylabel("理論値差分")
+    plt.xlabel("権利行使価格")
     plt.axvline(x=int(atm), color='red', linestyle='--', label=f"ATM({atm})")
     plt.legend()
     return plt
@@ -170,7 +173,7 @@ def plot_option_scatter(df, ticker, optyp, atm):
 
 st.title("海外オプション理論価格ツール")
 st.text("理論価格との差を表示【アービトラージに使ってね！】")
-image = Image.open("headeroption.png")
+image = Image.open("./images/headeroption.png")
 st.image(image)
 st.caption("ティッカーコードを入力し納会日、コールかプットを選択")
 
@@ -238,9 +241,11 @@ for row in putsja["権利行使価格"]:
     rironchiP.append(round(rp, 2))
     
 callsja.insert(2, '理論価格', rironchiC)
-callsja.insert(3, '終値-理論値', callsja["終値"] - callsja["理論価格"])
+callsja.insert(3, '理論値倍率(%)', round(callsja["理論価格"] / callsja["終値"]*100, 1))
+callsja.insert(4, '終値-理論値', callsja["終値"] - callsja["理論価格"])
 putsja.insert(2, '理論価格', rironchiP)
-putsja.insert(3, '終値-理論値', putsja["終値"] - putsja["理論価格"])
+putsja.insert(3, '理論値倍率(%)', round(putsja["理論価格"] / putsja["終値"]*100, 1))
+putsja.insert(4, '終値-理論値', putsja["終値"] - putsja["理論価格"])
 
 st.write("HV(ヒストリカルボラティリティー)",round(sigma, 2))
 st.text(f"{optionT}オプション{gengetu}")
