@@ -5,9 +5,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
-import matplotlib.pyplot as plt
 import seaborn as sns
 import japanize_matplotlib
+import matplotlib.pyplot as plt
 from PIL import Image
 
 sns.set_theme(font="IPAexGothic")
