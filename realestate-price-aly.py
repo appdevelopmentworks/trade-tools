@@ -10,6 +10,7 @@ import seaborn as sns
 import japanize_matplotlib
 from PIL import Image
 
+sns.set_theme(font="IPAexGothic")
 
 def collist_init():
     st.session_state['list'] = df.columns
