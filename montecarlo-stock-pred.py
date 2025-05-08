@@ -66,10 +66,10 @@ st.text("例 S&P500:^SPX, 日経225:^NKX, 日本株:4902.JP, 米国株:IYR.US, �
 col1, col2 = st.columns(2)
 with col1:
     ticker = st.text_input("ティッカーコードを入力:", value="^NKX")
-    iterations = int(st.text_input("試行回数:", value="100"))
+    iterations = st.number_input("試行回数:", value=100)
 with col2:
     start = st.date_input("標本データ開始期間:", value=initial_date)
-    intervals = int(st.text_input("予測期間(日):", value="30"))
+    intervals = st.number_input("予測期間(日):", value=30)
 
 #書式付きボタン
 st.markdown(
