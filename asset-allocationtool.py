@@ -8,6 +8,13 @@ import datetime
 from PIL import Image
 
 
+############################################################################
+today = datetime.date.today()
+startday =  datetime.date(2020, 1, 6)
+business_days = 250
+
+############################################################################
+
 @st.cache_data
 def get_asset_matrix(assets, colname ,start, end):
     pf_data = pd.DataFrame()
@@ -15,6 +22,29 @@ def get_asset_matrix(assets, colname ,start, end):
         pf_data[ticker] = web.DataReader(ticker, 'stooq', start=start, end=end)["Close"]
     pf_data.columns = colname
     return pf_data.sort_index(ascending=True)
+
+@st.cache_data
+def get_portfolios(assets, log_returns, inputattempts=1000):
+    num_assets = len(assets.split(","))
+    #numpy arrayに代入
+    pfolio_returns = []
+    pfolio_volatilities = []
+    pfolio_allocation = []
+
+    for x in range(inputattempts):
+        weights = np.random.random(num_assets)
+        weights /= np.sum(weights)
+        pfolio_returns.append(np.sum(weights * log_returns.mean()) * business_days)
+        pfolio_volatilities.append(np.sqrt(np.dot(weights.T, np.dot(log_returns.cov() * business_days, weights))))
+        pfolio_allocation.append(weights)
+    
+    dfweights = pd.DataFrame(np.array(pfolio_allocation))
+    dfweights.columns = inputassetsjp.split(",")    
+    pfolio_returns = np.array(pfolio_returns)
+    pfolio_volatilities = np.array(pfolio_volatilities)
+    dfreturns = pd.DataFrame({"期待リターン": pfolio_returns, "ボラティリティー": pfolio_volatilities})
+    portfolios = pd.concat([dfreturns, dfweights], axis=1).sort_values(by=['期待リターン', 'ボラティリティー'], ascending=[False, True])
+    return portfolios
 
 def plot_chart(data, title):
     plt.figure(figsize=(10, 5))
@@ -25,12 +55,17 @@ def plot_chart(data, title):
     plt.legend()
     return plt
 
-############################################################################
-today = datetime.date.today()
-startday =  datetime.date(2020, 1, 6)
-business_days = 250
 
-############################################################################
+def plt_scatter(data, title):
+    plt.figure(figsize=(10, 5))
+    plt.scatter(data.iloc[:,1], data.iloc[:,0])
+    plt.title(title)
+    plt.xlabel('ボラティリティー(リスク)')
+    plt.ylabel('期待リターン')
+    return plt
+
+
+####################################################################################
 st.title("資産配分ツール")
 
 st.text("ポートフォリオの構成に役立ててください")
@@ -90,3 +125,9 @@ if btnExec:
     df = pd.DataFrame(log_returns.mean() * 250)
     df.columns = ["平均リターン"]
     st.write(df)
+    dfpf = get_portfolios(inputassetsjp, log_returns)
+    st.subheader("リスク・リターン相関図")
+    pltscatter = plt_scatter(dfpf.iloc[:,:2], "リターンとボラティリティー(リスク)")
+    st.pyplot(pltscatter)
+    st.subheader("最適アセットアロケーション")
+    st.dataframe(dfpf)
