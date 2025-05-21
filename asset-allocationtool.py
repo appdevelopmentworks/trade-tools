@@ -73,7 +73,7 @@ image = Image.open("./images/headerassetallocation.png")
 st.image(image)
 st.caption("ティッカーコードをカンマ区切りスペース無しで入力")
 
-inputassets = st.text_input("stooqのティッカーコード:", value="^SPX,^NKX,GOLD.US,1345.JP,IYR.US,10YUSY.B")
+inputassets = st.text_input("stooqのティッカーコード:", value="^SPX,^NKX,1326.JP,1345.JP,IYR.US,10YUSY.B")
 inputassetsjp = st.text_input("対応する日本語列名:", value="S&P500,日経225,金,東証REIT,米国不動産,米国10年債")
 
 col1, col2 = st.columns(2)

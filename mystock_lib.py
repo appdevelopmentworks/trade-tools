@@ -14,6 +14,38 @@ def checkTicker(ticker):
     else:
         return ticker + ".T"
 
+#stooq用に変換する関数
+def checkTicker_stooq(ticker):
+    # 文字列型でない場合は、そのまま返す（エラーハンドリングとして）
+    if not isinstance(ticker, str):
+        return ticker
+
+    # 1. ^で始まる文字列はそのまま返す (例：^NKX)
+    if ticker.startswith("^"):
+        return ticker
+
+    # 2. 日本株の判定
+    # 2a. 4桁の数字の場合 (例：8151 -> 8151.JP)
+    if re.fullmatch(r"^[0-9]{4}$", ticker):
+        return ticker + ".JP"
+
+    # 2b. 元の関数の日本株パターンを流用し、末尾に .JP を追加
+    #     (1桁目:数字、2桁目:数字or特定大文字、3桁目:数字、4桁目:数字or特定大文字)
+    valid_letters_jp = "ACDFGHJKLMPNRSTUWX-Y"  # 元の関数で定義されていた有効な文字
+    # f-string内で {} をリテラルではなく変数展開として使う
+    pattern_jp_original_logic = rf"^[0-9][0-9{valid_letters_jp}][0-9][0-9{valid_letters_jp}]$"
+    if re.fullmatch(pattern_jp_original_logic, ticker):
+        return ticker + ".JP"
+
+    # 3. 米国株の判定 (1文字以上の英大文字のみ) (例：META -> META.US)
+    #    上記の日本株のパターンに一致しなかった場合に評価
+    if re.fullmatch(r"^[A-Z]+$", ticker):
+        return ticker + ".US"
+
+    # 4. 上記のいずれにも当てはまらない場合はそのまま返す
+    return ticker
+
+
 #コナーズRSI（CRSI）    
 def calculate_connors_rsi(df, rsi_period=3, streak_period=2, roc_period=100):
     # 終値の差分を計算
