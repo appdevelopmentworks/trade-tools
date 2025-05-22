@@ -25,7 +25,7 @@ def get_relative_data(tickers):
     return relative_strength
 
 
-#
+#チャート描画関数
 def plot_relative_chart(df):
     plt.figure(figsize=(12, 6))
     for ticker in df.columns:

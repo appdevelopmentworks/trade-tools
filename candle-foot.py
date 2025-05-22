@@ -34,7 +34,7 @@ def plot_scatter(df, colname, title, xlabel, ylabel, color):
     sns.set_theme(font="IPAexGothic")
     plt.figure(figsize=(10, 5))
     plt.scatter(x=df[colname], y=df['Close-Open'], c=color, alpha=0.5)
-    plt.axhline(0, color='red', lw=1) 
+    plt.axhline(0, color='blue', lw=1) 
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -91,19 +91,24 @@ with col2:
     
     
 if btnplot:
+    #データ取得
     df = get_stock_data(ticker)
+
     
     st.subheader("下ヒゲと当日変動幅の関係")
     plt = plot_scatter(df, "Open-Low-ATR3", "下ヒゲ/ATR3期間", "下ヒゲ-ATR3比率", "金額(終値-始値)", "#ff1493")
     st.pyplot(plt)
+    st.write("本日の３期間ATR:" + str(round(df["ATR3"][-1],2)))
     plt2 = plot_scatter(df, "Open-Low-TRratio", "下ヒゲ/真の値幅", "下ヒゲ-TR比率", "金額(終値-始値)", "green")
     st.pyplot(plt2)
+    st.write("本日の真の値幅:" + str(round(df["TR"][-1],2)))
     
     df2 = df.groupby('Open-Low-Ratio').mean()
     #df2 = df2[df2['Close-Open'] > 0]
     st.subheader("始値からどれくらい下がったら損失になるか")
     plt2 = plot_linechart(df2)
     st.pyplot(plt2)
+    st.write("本日の値幅:" + str(round((df["High"][-1] - df["Low"][-1]),2)))
     st.subheader("上昇幅順株価")
     st.dataframe(df2.sort_values("Close-Open", ascending=False))
 
