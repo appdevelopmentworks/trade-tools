@@ -7,7 +7,8 @@ import japanize_matplotlib
 from scipy.stats import norm
 import datetime
 from PIL import Image
-
+#自作ライブラリー
+from mystock_lib import *
 
 @st.cache_data
 def get_stockdata_stooq(ticker, start):
@@ -96,7 +97,7 @@ st.markdown(
 btnSimulation = st.button("シュミレーション")
 
 if btnSimulation:
-    data = get_stockdata_stooq(ticker, start)
+    data = get_stockdata_stooq(checkTicker_stooq(ticker), start)
     plt = plot_chart(data, f"{ticker}:現在までの株価")
     st.pyplot(plt)
     pred = montecarlo_simulation(data, iterations, intervals)
