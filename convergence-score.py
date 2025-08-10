@@ -79,7 +79,7 @@ min_score = st.sidebar.number_input(
 )
 max_score = st.sidebar.number_input(
     'Convergence_Score (最大値)',
-    min_value=0.0, max_value=0.5, value=0.05, step=0.001, format="%.4f"
+    min_value=0.0, max_value=0.5, value=0.01, step=0.001, format="%.4f"
 )
 
 # 3. 実行ボタン
